@@ -19,13 +19,12 @@ public class SuperLongReducer extends MapReduceBase implements Reducer<Text, Adv
 
         StringBuilder sb = new StringBuilder();
 
+        /*
         while( values.hasNext() ) {
             sb.append(values.next());
             sb.append(",");
         }
-
-
-
+        */
 
         System.out.println("Reduce Output: " + key + "<>" + sb.toString());
         output.collect(key, outValue);

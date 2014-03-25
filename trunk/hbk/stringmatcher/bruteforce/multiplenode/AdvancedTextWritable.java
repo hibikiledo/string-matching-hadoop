@@ -47,7 +47,11 @@ public class AdvancedTextWritable implements Writable, WritableComparable<Advanc
 
     @Override
     public void write(DataOutput dataOutput) throws IOException {
-        dataOutput.writeUTF( value + ',' + resultCode );
+        for(int i=0; i<value.length(); i++)
+            dataOutput.write(value.charAt(i));
+
+        dataOutput.write(',');
+        dataOutput.write( resultCode );
     }
 
     @Override

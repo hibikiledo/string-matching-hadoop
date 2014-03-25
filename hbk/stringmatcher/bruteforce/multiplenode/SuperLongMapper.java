@@ -22,7 +22,7 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
     public void map(LongWritable key, Text value, OutputCollector<Text, AdvancedTextWritable> output, Reporter reporter) throws IOException {
 
         // Debug
-        // System.out.println(key + ":" + value +":" + value.getLength());
+        // System.out.println("String" + ":" + value);
 
         // Get name
         currentFile = ((FileSplit)reporter.getInputSplit()).getPath().getName();
@@ -39,9 +39,11 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
                 valueOut.setValue( line );
 
                 output.collect(keyOut, valueOut);
-                System.out.println("Map Output: " + keyOut + "<>" +  valueOut);
+                System.out.println("Map Output: " + keyOut + "<>" +  valueOut.getOffset() + ":" + valueOut.getValue());
             }
         }
+
+        reader.close();
 
     }
 }

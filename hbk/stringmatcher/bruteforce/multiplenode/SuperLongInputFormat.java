@@ -42,8 +42,6 @@ public class SuperLongInputFormat extends TextInputFormat {
 
     }
 
-
-
     @Override
     public RecordReader<LongWritable, Text> getRecordReader(InputSplit genericSplit, JobConf job, Reporter reporter) throws IOException {
         // return new SuperLongLineRecordReader();
@@ -67,11 +65,10 @@ public class SuperLongInputFormat extends TextInputFormat {
                 reqStrSizeInt[i] = reqStrSize.get(i);
             }
 
-            return new SuperLongRecordReader(fileInputStream, reqStrSizeInt);
+            return new SuperLongRecordReader(fileInputStream, reqStrSizeInt, fileSplit.getStart());
         }
 
         return null;
-
     }
 
     @Override

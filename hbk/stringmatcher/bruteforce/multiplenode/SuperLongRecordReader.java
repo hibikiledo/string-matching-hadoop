@@ -9,19 +9,18 @@ import java.io.InputStream;
 
 public class SuperLongRecordReader implements RecordReader<LongWritable, Text> {
 
-
     private long pos;
     private int[] requestStringSize;
     private SuperLongLineReader in;
     private int len;
     private int index = 0;
 
-
     // Constructor
-    public SuperLongRecordReader(InputStream in, int[] requestStringSize) {
+    public SuperLongRecordReader(InputStream in, int[] requestStringSize, long startOffSet) {
 
         this.in = new SuperLongLineReader(in);
         this.requestStringSize = requestStringSize;
+        pos = startOffSet;
 
     }
 

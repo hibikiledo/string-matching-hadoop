@@ -12,19 +12,20 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, Text> {
     private long pos;
     private int[] requestStringSize;
     private SuperLongLineReader in;
+    private long fileLength;
     private int len;
     private int index = 0;
 
     // Constructor
-    public SuperLongRecordReader(InputStream in, int[] requestStringSize, long startOffSet) {
+    public SuperLongRecordReader(InputStream is, int[] requestStringSize, long startOffSet) {
 
-        this.in = new SuperLongLineReader(in);
+        in = new SuperLongLineReader(is);
         this.requestStringSize = requestStringSize;
         pos = startOffSet;
+        fileLength = in.getProcessingFileLength();
 
     }
 
-    // Read here
     // This function determine how many <key,value> pairs to be emit.
     @Override
     public boolean next(LongWritable key, Text value) throws IOException {
@@ -63,13 +64,11 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, Text> {
     }
 
     @Override
-    public void close() throws IOException {
-        in.close();
-    }
+    public void close() throws IOException { in.close();  }
 
     @Override
     public float getProgress() throws IOException {
-        return 0;
+        return ( pos/fileLength ) * 100;
     }
 }
 

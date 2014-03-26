@@ -9,24 +9,32 @@ import org.apache.hadoop.mapred.Reporter;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class SuperLongReducer extends MapReduceBase implements Reducer<Text, AdvancedTextWritable, Text, AdvancedTextWritable> {
+public class SuperLongReducer extends MapReduceBase implements Reducer<Text, AdvancedTextWritable, Text, Text> {
 
-    private AdvancedTextWritable outValue = new AdvancedTextWritable();
+    private Text outValue = new Text();
+    private AdvancedTextWritable curValue;
 
     @Override
-    public void reduce(Text key, Iterator<AdvancedTextWritable> values, OutputCollector<Text, AdvancedTextWritable> output, Reporter reporter)
+    public void reduce(Text key, Iterator<AdvancedTextWritable> values, OutputCollector<Text, Text> output, Reporter reporter)
             throws IOException {
 
         StringBuilder sb = new StringBuilder();
 
-        /*
         while( values.hasNext() ) {
-            sb.append(values.next());
-            sb.append(",");
+
+            curValue = values.next();
+            sb.append('(');
+            sb.append(curValue.getOffset());
+            sb.append(',');
+            sb.append(curValue.getValue());
+            sb.append(") ");
+
         }
-        */
+
+        outValue.set(sb.toString());
 
         System.out.println("Reduce Output: " + key + "<>" + sb.toString());
+        // Key is string, value are offset and fileName
         output.collect(key, outValue);
 
     }

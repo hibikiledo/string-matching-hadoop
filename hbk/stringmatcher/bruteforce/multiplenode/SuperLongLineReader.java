@@ -9,6 +9,7 @@ public class SuperLongLineReader implements Closeable {
     private InputStream in;
     private RandomAccessFile raf;
     private int len;
+    private long fileLength;
     private byte[] buffer = new byte[1024];
     private static final String FILE_NAME = "split_temp";
 
@@ -17,10 +18,12 @@ public class SuperLongLineReader implements Closeable {
         try {
             allocateSplitLocally();
             raf = new RandomAccessFile(new File(FILE_NAME), "r");
+            fileLength = raf.length();
         } catch (IOException e) { System.err.println(e); }
     }
 
     // This improves seek() performance
+    // Allocate the entire file (1G) locally
     private void allocateSplitLocally() throws IOException  {
 
         FileOutputStream fos = new FileOutputStream(FILE_NAME);
@@ -31,6 +34,10 @@ public class SuperLongLineReader implements Closeable {
         }
 
         fos.close();
+    }
+
+    public long getProcessingFileLength() {
+        return fileLength;
     }
 
     public int readAtPos(Text value, long pos, int wordLength) throws IOException {

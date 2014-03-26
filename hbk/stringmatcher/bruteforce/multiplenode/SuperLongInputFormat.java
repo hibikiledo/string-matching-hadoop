@@ -132,7 +132,11 @@ public class SuperLongInputFormat extends TextInputFormat {
                 splits.add(makeSplit(path, 0, length, new String[0]));
             }
         }
-        // Todo Edit here NOTE*
+        // Debug - print out detail of each input split
+        for( FileSplit split : splits ) {
+            System.out.println("Name:" + split.getPath().getName());
+            System.out.println("Start:" + split.getStart());
+        }
         System.out.println("Split Count: " + splits.size());
         return splits.toArray(new FileSplit[splits.size()]);
     }

@@ -31,12 +31,12 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
         String line;
         while((line = reader.readLine()) != null) {
             if(line.equals(value.toString())) {
-                // Key of map is filename
-                keyOut.set(currentFile);
+                // Key of map is the pattern the matched
+                keyOut.set(line);
 
                 // Values contain offset, result, string
                 valueOut.setOffset( key.get() );
-                valueOut.setValue( line );
+                valueOut.setValue( currentFile );
 
                 output.collect(keyOut, valueOut);
                 System.out.println("Map Output: " + keyOut + "<>" +  valueOut.getOffset() + ":" + valueOut.getValue());

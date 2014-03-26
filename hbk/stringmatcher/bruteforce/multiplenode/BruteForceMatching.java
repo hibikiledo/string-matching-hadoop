@@ -16,7 +16,7 @@ public class BruteForceMatching {
 
         // Todo Don't forget to change this to match reduce class & function
         conf.setOutputKeyClass(Text.class);
-        conf.setOutputValueClass(Text.class);
+        conf.setOutputValueClass(AdvancedTextWritable.class);
 
         conf.setMapperClass(SuperLongMapper.class);
         // conf.setCombinerClass(SuperLongReducer.class);

@@ -124,6 +124,7 @@ public class SuperLongInputFormat extends TextInputFormat {
                                 splitHosts));
                     }
                 } else {
+                    // if not splitable,, simply make split with the whole file length
                     String[] splitHosts = getSplitHosts(blkLocations,0,length,clusterMap);
                     splits.add(makeSplit(path, 0, length, splitHosts));
                 }
@@ -139,6 +140,11 @@ public class SuperLongInputFormat extends TextInputFormat {
         }
         System.out.println("Split Count: " + splits.size());
         return splits.toArray(new FileSplit[splits.size()]);
+    }
+
+    @Override
+    protected boolean isSplitable(FileSystem fs, Path file) {
+        return false;
     }
 }
 

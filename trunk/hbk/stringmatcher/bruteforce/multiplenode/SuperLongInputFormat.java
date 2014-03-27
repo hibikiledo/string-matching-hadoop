@@ -38,7 +38,9 @@ public class SuperLongInputFormat extends TextInputFormat {
             String line;
             while((line=reader.readLine())!=null) {
                 System.out.println("LineReadIn: " + line);
-                reqStrSize.add(line.length());
+                // Don't add if that length is already exists
+                if(!reqStrSize.contains( line.length() ))
+                    reqStrSize.add(line.length());
             }
 
         } catch (IOException e) {
@@ -68,8 +70,6 @@ public class SuperLongInputFormat extends TextInputFormat {
             for(int i=0; i< reqStrSize.size(); i++) {
                 reqStrSizeInt[i] = reqStrSize.get(i);
             }
-
-            System.out.println( "Request Size:" + reqStrSize.size() );
 
             return new SuperLongRecordReader(fileInputStream, reqStrSizeInt, fileSplit.getStart());
         }
@@ -130,7 +130,7 @@ public class SuperLongInputFormat extends TextInputFormat {
                                 splitHosts));
                     }
                 } else {
-                    // if not splitable,, simply make split with the whole file length
+                    // if not splitable, simply make split with the whole file length
                     String[] splitHosts = getSplitHosts(blkLocations,0,length,clusterMap);
                     splits.add(makeSplit(path, 0, length, splitHosts));
                 }

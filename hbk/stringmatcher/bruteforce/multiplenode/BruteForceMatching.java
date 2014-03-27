@@ -9,6 +9,8 @@ import org.apache.hadoop.mapred.*;
 
 public class BruteForceMatching {
 
+    private String stringListFileName;
+
     public static void main(String[] args) throws Exception {
 
         JobConf conf = new JobConf(BruteForceMatching.class);

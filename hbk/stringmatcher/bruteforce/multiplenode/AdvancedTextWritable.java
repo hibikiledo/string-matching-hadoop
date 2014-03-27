@@ -15,7 +15,6 @@ public class AdvancedTextWritable implements Writable, WritableComparable<Advanc
     private static final String DELIMITER = ",";
 
     private String value;
-    private int resultCode = 0;
     private long offset;
 
     // Default constructor
@@ -29,16 +28,8 @@ public class AdvancedTextWritable implements Writable, WritableComparable<Advanc
         this.value = value;
     }
 
-    public void setResultCode(int resultCode) {
-        this.resultCode = resultCode;
-    }
-
     public String getValue() {
         return value;
-    }
-
-    public int getResultCode() {
-        return resultCode;
     }
 
     public long getOffset() {

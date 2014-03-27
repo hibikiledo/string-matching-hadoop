@@ -1,5 +1,6 @@
 package hbk.stringmatcher.bruteforce.multiplenode;
 
+import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -15,21 +16,25 @@ public class SuperLongInputFormat extends TextInputFormat {
     public static final String INPUT_DIR_RECURSIVE =  org.apache.hadoop.mapreduce.lib.input.FileInputFormat.INPUT_DIR_RECURSIVE;
     private static final double SPLIT_SLOP = 1.1;   // 10% slop
     private long minSplitSize = 1;
+
     private ArrayList<Integer> reqStrSize = new ArrayList<Integer>();
+    private String stringListFileName;
 
     @Override
     public void configure(JobConf conf) {
         // Call super class method fist
         super.configure(conf);
-
-        getReqStrSize();
+        try {
+            stringListFileName = DistributedCache.getLocalCacheFiles(conf)[0].getName();
+            getReqStrSize();
+        } catch (IOException e) {
+            System.err.println( e );
+        }
     }
 
     private void getReqStrSize() {
-
         try {
-
-            File stringList = new File("./stringlist.txt");
+            File stringList = new File(stringListFileName);
             BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream( stringList )));
             String line;
             while((line=reader.readLine())!=null) {
@@ -39,7 +44,6 @@ public class SuperLongInputFormat extends TextInputFormat {
         } catch (IOException e) {
             System.err.println(e);
         }
-
     }
 
     @Override

@@ -42,7 +42,6 @@ public class SuperLongReducer extends MapReduceBase implements Reducer<Text, Adv
                 output.collect(key, outValue);
                 sb = new StringBuilder();
             }
-
         }
 
         outValue.set(sb.toString());

@@ -8,6 +8,7 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.net.NetworkTopology;
 
 import java.io.*;
+import java.net.URI;
 import java.util.ArrayList;
 
 public class SuperLongInputFormat extends TextInputFormat {
@@ -22,22 +23,21 @@ public class SuperLongInputFormat extends TextInputFormat {
 
     @Override
     public void configure(JobConf conf) {
-        // Call super class method fist
+        // Call super class method first
         super.configure(conf);
-        try {
-            stringListFileName = DistributedCache.getLocalCacheFiles(conf)[0].getName();
-            getReqStrSize();
-        } catch (IOException e) {
-            System.err.println( e );
-        }
+        getReqStrSize(conf);
     }
 
-    private void getReqStrSize() {
+    private void getReqStrSize(JobConf conf) {
         try {
-            File stringList = new File(stringListFileName);
+            URI[] files = DistributedCache.getCacheFiles(conf);
+            System.out.println( files[0].getPath() ); // debug
+            File stringList = new File( files[0].getPath() );
+
             BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream( stringList )));
             String line;
             while((line=reader.readLine())!=null) {
+                System.out.println("LineReadIn: " + line);
                 reqStrSize.add(line.length());
             }
 
@@ -68,6 +68,8 @@ public class SuperLongInputFormat extends TextInputFormat {
             for(int i=0; i< reqStrSize.size(); i++) {
                 reqStrSizeInt[i] = reqStrSize.get(i);
             }
+
+            System.out.println( "Request Size:" + reqStrSize.size() );
 
             return new SuperLongRecordReader(fileInputStream, reqStrSizeInt, fileSplit.getStart());
         }

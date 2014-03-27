@@ -52,7 +52,7 @@ public class AdvancedTextWritable implements Writable, WritableComparable<Advanc
     public void readFields(DataInput dataInput) throws IOException {
         try {
             String line = dataInput.readLine();
-            System.out.println("ReadFieldLine: " + line);
+            System.out.println("ReadField, in line: " + line); // debug
             String[] rawIns = line.split(DELIMITER);
             System.out.println("value:" + rawIns[0] + "-- offset" + rawIns[1]);
             this.value = rawIns[0];

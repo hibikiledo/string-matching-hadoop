@@ -47,19 +47,14 @@ public class AdvancedTextWritable implements Writable, WritableComparable<Advanc
 
     @Override
     public void write(DataOutput dataOutput) throws IOException {
+        // Debug
         System.out.println("Writing from AVT: " + value + ":" + offset);
+
         for(int i=0; i<value.length(); i++)
             dataOutput.write(value.charAt(i));
 
         dataOutput.write(',');
         writeOffset(offset, dataOutput);
-    }
-
-    private void writeOffset(long offset, DataOutput out)throws IOException{
-        String offsetStr = String.valueOf(offset);
-        for(int i=0; i<offsetStr.length(); i++) {
-            out.write(offsetStr.charAt(i));
-        }
     }
 
     @Override
@@ -80,5 +75,12 @@ public class AdvancedTextWritable implements Writable, WritableComparable<Advanc
     @Override
     public int compareTo(AdvancedTextWritable o) {
         return 0;
+    }
+
+    private void writeOffset(long offset, DataOutput out)throws IOException{
+        String offsetStr = String.valueOf(offset);
+        for(int i=0; i<offsetStr.length(); i++) {
+            out.write(offsetStr.charAt(i));
+        }
     }
 }

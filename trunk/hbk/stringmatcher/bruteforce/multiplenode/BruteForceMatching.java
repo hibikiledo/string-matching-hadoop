@@ -32,7 +32,7 @@ public class BruteForceMatching {
         FileOutputFormat.setOutputPath(conf, new Path(args[1]));
 
         // Setup DistributedCache
-        DistributedCache.addCacheFile(new URI("./stringlist.txt"), conf);
+        DistributedCache.addCacheFile(new URI(args[2]), conf);
 
         JobClient.runJob(conf);
     }

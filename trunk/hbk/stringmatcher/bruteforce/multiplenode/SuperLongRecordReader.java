@@ -64,11 +64,11 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, Text> {
     }
 
     @Override
-    public void close() throws IOException { in.close();  }
+    public void close() throws IOException { in.close(); }
 
     @Override
     public float getProgress() throws IOException {
-        return ( pos/fileLength ) * 100;
+        return ( pos / fileLength ) * 100;
     }
 }
 

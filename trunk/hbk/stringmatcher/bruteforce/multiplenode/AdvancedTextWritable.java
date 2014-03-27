@@ -9,9 +9,6 @@ import java.io.IOException;
 
 public class AdvancedTextWritable implements Writable, WritableComparable<AdvancedTextWritable>, Comparable<AdvancedTextWritable> {
 
-    // resultCode = 0 : string match its split length
-    // resultCode NOT = 0 : string contain some null
-
     private static final String DELIMITER = ",";
 
     private String value;

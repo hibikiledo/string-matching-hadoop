@@ -19,8 +19,8 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
     @Override
     public void configure(JobConf job) {
         try {
-            Path[] files = DistributedCache.getLocalCacheFiles(job);
-            stringListFile = new File(files[0].getName());
+            URI[] files = DistributedCache.getCacheFiles(job);
+            stringListFile = new File(files[0].getPath());
         } catch (IOException e) {
             System.err.println( e );
         }

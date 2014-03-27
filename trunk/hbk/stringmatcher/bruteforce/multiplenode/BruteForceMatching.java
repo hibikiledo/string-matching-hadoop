@@ -14,21 +14,17 @@ public class BruteForceMatching {
     public static void main(String[] args) throws Exception {
 
         JobConf conf = new JobConf(BruteForceMatching.class);
-        conf.setJobName("StringMatching");
+        conf.setJobName("StringMatching_HBK");
 
         // Todo Don't forget to change this to match reduce class & function
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(AdvancedTextWritable.class);
 
         conf.setMapperClass(SuperLongMapper.class);
-        // conf.setCombinerClass(SuperLongReducer.class);
         conf.setReducerClass(SuperLongReducer.class);
 
-        // conf.setInputFormat(TextInputFormat.class);
         conf.setInputFormat(SuperLongInputFormat.class);
         conf.setOutputFormat(TextOutputFormat.class);
-
-        // conf.setNumMapTasks(1);
 
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
         FileOutputFormat.setOutputPath(conf, new Path(args[1]));

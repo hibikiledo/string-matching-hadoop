@@ -6,6 +6,7 @@ import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.mapreduce.Job;
 
 public class BruteForceMatching {
 
@@ -17,8 +18,8 @@ public class BruteForceMatching {
         conf.setJobName("StringMatching_HBK");
 
         // Todo Don't forget to change this to match reduce class & function
-        conf.setOutputKeyClass(Text.class);
-        conf.setOutputValueClass(AdvancedTextWritable.class);
+        conf.setMapOutputKeyClass(Text.class);
+        conf.setMapOutputValueClass(AdvancedTextWritable.class);
 
         conf.setMapperClass(SuperLongMapper.class);
         conf.setReducerClass(SuperLongReducer.class);
@@ -30,7 +31,6 @@ public class BruteForceMatching {
         FileOutputFormat.setOutputPath(conf, new Path(args[1]));
 
         // Setup DistributedCache
-        // DistributedCache.addCacheFile(new URI(args[2]), conf);
         DistributedCache.addCacheFile(new URI(args[2]), conf);
 
         JobClient.runJob(conf);

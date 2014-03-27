@@ -1,10 +1,13 @@
 package hbk.stringmatcher.bruteforce.multiplenode;
 
+import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
 
 import java.io.*;
+import java.net.URI;
 
 public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, AdvancedTextWritable> {
 
@@ -15,7 +18,12 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
 
     @Override
     public void configure(JobConf job) {
-        stringListFile = new File("./stringlist.txt");
+        try {
+            Path[] files = DistributedCache.getLocalCacheFiles(job);
+            stringListFile = new File(files[0].getName());
+        } catch (IOException e) {
+            System.err.println( e );
+        }
     }
 
     @Override

@@ -9,11 +9,11 @@ import org.apache.hadoop.mapred.*;
 import java.io.*;
 import java.net.URI;
 
-public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, AdvancedTextWritable> {
+public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, LongWritable> {
 
     private File stringListFile;
     private Text keyOut = new Text();
-    private AdvancedTextWritable valueOut = new AdvancedTextWritable();
+    private LongWritable valueOut = new LongWritable();
     private String currentFile;
 
     @Override
@@ -27,7 +27,7 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
     }
 
     @Override
-    public void map(LongWritable key, Text value, OutputCollector<Text, AdvancedTextWritable> output, Reporter reporter) throws IOException {
+    public void map(LongWritable key, Text value, OutputCollector<Text, LongWritable> output, Reporter reporter) throws IOException {
 
         // Debug
         // System.out.println("String" + ":" + value);
@@ -39,15 +39,14 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
         String line;
         while((line = reader.readLine()) != null) {
             if(line.equals(value.toString())) {
-                // Key of map is the pattern the matched
-                keyOut.set(line);
+                // Key of map to be the filename and string
+                keyOut.set(currentFile+','+line);
 
-                // Values contain offset, result, string
-                valueOut.setOffset( key.get() );
-                valueOut.setValue( currentFile );
+                // Value is offset
+                valueOut.set( key.get() );
 
                 output.collect(keyOut, valueOut);
-                System.out.println("Map Output: " + keyOut + "<>" +  valueOut.getOffset() + ":" + valueOut.getValue());
+                System.out.println("Map Output: " + keyOut + "<>" +  valueOut.get());
             }
         }
 

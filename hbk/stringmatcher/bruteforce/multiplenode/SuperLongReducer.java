@@ -1,5 +1,6 @@
 package hbk.stringmatcher.bruteforce.multiplenode;
 
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.MapReduceBase;
 import org.apache.hadoop.mapred.OutputCollector;
@@ -9,29 +10,30 @@ import org.apache.hadoop.mapred.Reporter;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class SuperLongReducer extends MapReduceBase implements Reducer<Text, AdvancedTextWritable, Text, Text> {
+public class SuperLongReducer extends MapReduceBase implements Reducer<Text, LongWritable, Text, Text> {
 
     // Char in java is 2 byte, 16 bit
     // Allow maximum of 2M / value pair = 1048576 in string length
 
     private Text outValue = new Text();
-    private AdvancedTextWritable curValue;
     private static final int MAX_VALUE_LIMIT = 1048576;
 
     @Override
-    public void reduce(Text key, Iterator<AdvancedTextWritable> values, OutputCollector<Text, Text> output, Reporter reporter)
+    public void reduce(Text key, Iterator<LongWritable> values, OutputCollector<Text, Text> output, Reporter reporter)
             throws IOException {
 
         StringBuilder sb = new StringBuilder();
+        boolean isFirstElementPassed = false;
 
         while( values.hasNext() ) {
 
-            curValue = values.next();
-            sb.append('(');
-            sb.append(curValue.getOffset());
-            sb.append(',');
-            sb.append(curValue.getValue());
-            sb.append(") ");
+            if(!isFirstElementPassed) {
+                sb.append(values.next().get());
+                isFirstElementPassed = true;
+            }
+            else {
+                sb.append(',').append(values.next().get());
+            }
 
             // if sb.length more than limit , collect once
             if(sb.length() > MAX_VALUE_LIMIT) {

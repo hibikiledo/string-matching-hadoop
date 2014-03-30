@@ -19,13 +19,16 @@ public class BruteForceMatching {
 
         // Todo Don't forget to change this to match reduce class & function
         conf.setMapOutputKeyClass(Text.class);
-        conf.setMapOutputValueClass(AdvancedTextWritable.class);
+        conf.setMapOutputValueClass(LongWritable.class);
 
         conf.setMapperClass(SuperLongMapper.class);
         conf.setReducerClass(SuperLongReducer.class);
 
         conf.setInputFormat(SuperLongInputFormat.class);
         conf.setOutputFormat(TextOutputFormat.class);
+
+        // Set key-value separator to ','
+        conf.set("mapreduce.output.textoutputformat.separator", ",");
 
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
         FileOutputFormat.setOutputPath(conf, new Path(args[1]));

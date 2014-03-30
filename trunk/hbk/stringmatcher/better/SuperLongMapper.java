@@ -1,4 +1,4 @@
-package hbk.stringmatcher.bruteforce.multiplenode;
+package hbk.stringmatcher.better;
 
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;

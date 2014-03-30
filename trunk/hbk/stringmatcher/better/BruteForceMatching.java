@@ -1,4 +1,4 @@
-package hbk.stringmatcher.bruteforce.multiplenode;
+package hbk.stringmatcher.better;
 
 import java.net.URI;
 
@@ -6,7 +6,6 @@ import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.*;
-import org.apache.hadoop.mapreduce.Job;
 
 public class BruteForceMatching {
 

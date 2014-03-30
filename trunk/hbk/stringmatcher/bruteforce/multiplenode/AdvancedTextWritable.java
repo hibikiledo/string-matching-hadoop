@@ -39,7 +39,7 @@ public class AdvancedTextWritable implements Writable, WritableComparable<Advanc
         System.out.println("Writing from AVT: " + value + ":" + offset);
 
         for(int i=0; i<value.length(); i++)
-            dataOutput.write(value.charAt(i));
+           dataOutput.write(value.charAt(i));
 
         dataOutput.write(',');
         writeOffset(offset, dataOutput);

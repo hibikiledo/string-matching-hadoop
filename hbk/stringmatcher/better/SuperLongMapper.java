@@ -62,9 +62,6 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
         currentFile = ((FileSplit)reporter.getInputSplit()).getPath().getName();
         byte[] valueInBytes = value.getBytes();
 
-        // Debug
-        System.out.println("");
-
         // Find match one
         Iterator<byte[]> subset = map.get( valueInBytes[0] ).getIterator();
         while(subset.hasNext()) {
@@ -73,16 +70,11 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
                 keyOut.set(currentFile+","+new String( current )); // set key
                 valueOut.set( key.get() );
                 output.collect(keyOut, valueOut);
-                System.out.println("Found Match :3 " +keyOut + "<>" + valueOut.get());
              }
         }
     }
 
     private boolean isMatch(byte[] in, byte[] in2) {
-
-        System.out.println("From subset : "+new String(in));
-        System.out.println("Candidate : "+new String(in2).trim());
-
         int size = Math.min(in.length, in2.length);
         for(int i=0; i<size; i++) {
             if(in[i] != in2[i]) {

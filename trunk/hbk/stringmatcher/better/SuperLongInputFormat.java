@@ -32,9 +32,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
 
     private void findMaxPatternLength(JobConf jobConf) {
         int max=0;
-
         try {
-
             URI[] files = DistributedCache.getCacheFiles(jobConf);
             File stringListFile = new File(files[0].getPath());
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(stringListFile)));
@@ -43,10 +41,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
             while( (line = reader.readLine())!=null ) {
                 max = max > line.length() ? max : line.length();
             }
-
             maxPatternLength = max;
-            System.out.println("MaxPatLen : "+maxPatternLength);
-
         } catch (IOException e) {
             System.err.println(e);
         }

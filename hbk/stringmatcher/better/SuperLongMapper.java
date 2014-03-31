@@ -2,56 +2,94 @@ package hbk.stringmatcher.better;
 
 import org.apache.hadoop.filecache.DistributedCache;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.*;
 
 import java.io.*;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Iterator;
 
-public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritable, Text, Text, LongWritable> {
+public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritable, BytesWritable, Text, LongWritable> {
 
     private File stringListFile;
     private Text keyOut = new Text();
     private LongWritable valueOut = new LongWritable();
     private String currentFile;
 
+    private static HashMap<Byte, BytesArrayWrapper> map = new HashMap<Byte, BytesArrayWrapper>();
+
     @Override
     public void configure(JobConf job) {
         try {
             URI[] files = DistributedCache.getCacheFiles(job);
             stringListFile = new File(files[0].getPath());
+            initialize(job);
         } catch (IOException e) {
             System.err.println( e );
         }
     }
 
-    @Override
-    public void map(LongWritable key, Text value, OutputCollector<Text, LongWritable> output, Reporter reporter) throws IOException {
+    private void initialize(JobConf conf) {
 
-        // Debug
-        // System.out.println("String" + ":" + value);
+        // Init hash map
+        map.put((byte)97, new BytesArrayWrapper());
+        map.put((byte)98, new BytesArrayWrapper());
+        map.put((byte)99, new BytesArrayWrapper());
+        map.put((byte)100, new BytesArrayWrapper());
+
+        // Init data in hash map
+        try {
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream( stringListFile )));
+            String line;
+            // Load all query into hash map
+            while((line=reader.readLine())!=null) {
+                map.get( line.getBytes()[0] ).add(line.getBytes());
+            }
+
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
+    @Override
+    public void map(LongWritable key, BytesWritable value, OutputCollector<Text, LongWritable> output, Reporter reporter) throws IOException {
 
         // Get name
         currentFile = ((FileSplit)reporter.getInputSplit()).getPath().getName();
+        byte[] valueInBytes = value.getBytes();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(stringListFile)));
-        String line;
-        while((line = reader.readLine()) != null) {
-            if(line.equals(value.toString())) {
-                // Key of map to be the filename and string
-                keyOut.set(currentFile+','+line);
+        // Debug
+        System.out.println("");
 
-                // Value is offset
+        // Find match one
+        Iterator<byte[]> subset = map.get( valueInBytes[0] ).getIterator();
+        while(subset.hasNext()) {
+            byte[] current = subset.next();
+            if(isMatch( current, valueInBytes )) {
+                keyOut.set(currentFile+","+new String( current )); // set key
                 valueOut.set( key.get() );
-
                 output.collect(keyOut, valueOut);
-                System.out.println("Map Output: " + keyOut + "<>" +  valueOut.get());
+                System.out.println("Found Match :3 " +keyOut + "<>" + valueOut.get());
+             }
+        }
+    }
+
+    private boolean isMatch(byte[] in, byte[] in2) {
+
+        System.out.println("From subset : "+new String(in));
+        System.out.println("Candidate : "+new String(in2).trim());
+
+        int size = Math.min(in.length, in2.length);
+        for(int i=0; i<size; i++) {
+            if(in[i] != in2[i]) {
+                return false;
             }
         }
-
-        reader.close();
-
+        return true;
     }
 }
 

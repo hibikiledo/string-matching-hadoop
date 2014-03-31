@@ -26,6 +26,8 @@ public class BruteForceMatching {
         conf.setInputFormat(SuperLongInputFormat.class);
         conf.setOutputFormat(TextOutputFormat.class);
 
+        conf.setNumMapTasks(4);
+
         // Set key-value separator to ','
         conf.set("mapreduce.output.textoutputformat.separator", ",");
 

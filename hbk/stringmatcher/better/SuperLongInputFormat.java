@@ -45,7 +45,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
             }
 
             maxPatternLength = max;
-            System.out.println("MaxPatLen"+maxPatternLength);
+            System.out.println("MaxPatLen : "+maxPatternLength);
 
         } catch (IOException e) {
             System.err.println(e);
@@ -71,7 +71,6 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
 
             return new SuperLongRecordReader(fileInputStream, fileSplit.getStart(), fileSplit.getLength(), maxPatternLength);
         }
-
         return null;
     }
 

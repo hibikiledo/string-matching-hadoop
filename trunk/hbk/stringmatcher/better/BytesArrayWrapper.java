@@ -20,7 +20,7 @@ public class BytesArrayWrapper {
     public int getMaxSize() {return maxSize;}
 
     public void add(byte[] bIn) {
-        if(isContained(bIn)) {
+        if(!isContained(bIn)) {
             b.add(bIn);
             minSize = bIn.length < minSize ? bIn.length : minSize;
             maxSize = bIn.length > maxSize ? bIn.length : maxSize;
@@ -30,10 +30,24 @@ public class BytesArrayWrapper {
     public Iterator<byte[]> getIterator() {return b.iterator();}
 
     private boolean isContained(byte[] bIn) {
-        for(byte[] each : b) {
-            for(int i=0; i<each.length; i++) {
-                if(each[i] != bIn[i])
-                    return false;
+        if( b.size() == 0) return false;
+
+        for(int i=0; i<b.size(); i++) {
+
+            byte[] currentElement = b.get(i);
+            if( !compareBytes(currentElement, bIn) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean compareBytes(byte[] a, byte[] b) {
+        if(a.length != b.length) return false;
+
+        for(int i=0; i<a.length; i++) {
+            if(a[i] != b[i]) {
+                return false;
             }
         }
         return true;

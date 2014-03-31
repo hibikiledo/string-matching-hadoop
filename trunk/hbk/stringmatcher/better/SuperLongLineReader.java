@@ -52,15 +52,10 @@ public class SuperLongLineReader implements Closeable {
     public int read(BytesWritable valueIn) throws IOException{
         raf.seek( posRelativeToSplit ); // move pointer to pos
 
-        System.out.println("read at pos:" + posRelativeToSplit);
-
         byte[] buffer = new byte[ maxPatLength ]; // create buffer with the max size of pattern length
 
         inLength = raf.read(buffer, 0, maxPatLength);
         if (inLength!= -1) valueIn.set(buffer, 0, maxPatLength);
-
-        System.out.println("read value " + new String(valueIn.getBytes()).trim());
-        // System.out.println("read length " + inLength);
 
         posRelativeToSplit++;
 

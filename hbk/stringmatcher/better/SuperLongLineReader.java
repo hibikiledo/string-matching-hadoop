@@ -7,11 +7,10 @@ import java.io.*;
 public class SuperLongLineReader implements Closeable {
 
     private InputStream in;
-    private RandomAccessFile raf;
     private long startOffset, blockSize;
-    private int maxPatLength, inLength;
+    private int maxPatLength;
     private int posRelativeToSplit = 0;
-    private static final String FILE_NAME = "split_temp";
+    private byte[] source;
 
     public SuperLongLineReader(InputStream in, long startOffset, long blockSize, int maxPatLength) {
         this.in = in;
@@ -20,46 +19,40 @@ public class SuperLongLineReader implements Closeable {
         this.maxPatLength = maxPatLength;
 
         System.out.println("LineRecordReader(StartOffset): "+startOffset);
+        System.out.println("BlockSize: " + blockSize);
+        System.out.println("MaxPatternLength: " + maxPatLength);
 
         try {
-            allocateSplitLocally();
-            raf = new RandomAccessFile(new File(FILE_NAME), "r");
+            allocateIntoMem();
         } catch (IOException e) { System.err.println(e); }
     }
 
     // Allocate the file locally ( only the interest part, not the entire file )
-    private void allocateSplitLocally() throws IOException  {
-        int inSize;
+    private void allocateIntoMem() throws IOException  {
+
+        int sourceReadOffset=0;
+        int len=0;
+
+        source = new byte[ (int) blockSize + (maxPatLength-1) ];
+        System.out.println("source size = " + source.length);
 
         in.skip( startOffset ); // discard any data before the specify offset
-        FileOutputStream fos = new FileOutputStream(FILE_NAME); // prepare to write file
-
-        int sizeToBeWritten = (int) blockSize + (maxPatLength-1);
-        byte[] buffer = new byte[4096];
-        while( sizeToBeWritten > 0) {
-            inSize = in.read(buffer, 0, Math.min(sizeToBeWritten, 4096)); // read to the end offset
-            if(inSize!=-1) {
-                sizeToBeWritten -= inSize;
-                fos.write(buffer, 0, inSize); // prevent from writing null character to the file
-                System.out.println("allocating left:" + sizeToBeWritten);
-            } else {
-                break;
-            }
+        while( sourceReadOffset < source.length-1 ) {
+            len += in.read(source, sourceReadOffset, 1);
+            sourceReadOffset++;
         }
-        fos.close();
+
+        System.out.println("Data read from stream: " + len);
+
     }
 
     public int read(BytesWritable valueIn) throws IOException{
-        raf.seek( posRelativeToSplit ); // move pointer to pos
 
-        byte[] buffer = new byte[ maxPatLength ]; // create buffer with the max size of pattern length
-
-        inLength = raf.read(buffer, 0, maxPatLength);
-        if (inLength!= -1) valueIn.set(buffer, 0, maxPatLength);
-
+        valueIn.set(source, posRelativeToSplit, maxPatLength);
+        System.out.println("Position: " + posRelativeToSplit);
         posRelativeToSplit++;
 
-        return inLength; // simply return length read, eof will be check in mapper
+        return posRelativeToSplit <= (source.length-1)-maxPatLength ? 0 : -1;
     }
 
     @Override

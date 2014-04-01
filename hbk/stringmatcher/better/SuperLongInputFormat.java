@@ -49,7 +49,6 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
 
     @Override
     public RecordReader<LongWritable, BytesWritable> getRecordReader(InputSplit genericSplit, JobConf job, Reporter reporter) throws IOException {
-        // return new SuperLongLineRecordReader();
 
         FileSplit fileSplit = null;
         Path filePath;
@@ -81,12 +80,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
             if (file.isDirectory()) {
                 throw new IOException("Not a file: "+ file.getPath());
             }
-            totalSize += file.getLen();
         }
-
-        long goalSize = totalSize / (numSplits == 0 ? 1 : numSplits);
-        long minSize = Math.max(job.getLong(org.apache.hadoop.mapreduce.lib.input.
-                FileInputFormat.SPLIT_MINSIZE, 1), minSplitSize);
 
         // generate splits
         ArrayList<FileSplit> splits = new ArrayList<FileSplit>(numSplits);
@@ -107,8 +101,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
                 }
 
                 if (isSplitable(fs, path)) {
-                    long blockSize = file.getBlockSize();
-                    long splitSize = computeSplitSize(goalSize, minSize, blockSize);
+                    long splitSize = job.getInt("hbk.userdefined.split.size", 16777216);
 
                     long bytesRemaining = length;
                     while (((double) bytesRemaining)/splitSize > SPLIT_SLOP) {

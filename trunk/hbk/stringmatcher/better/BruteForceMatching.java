@@ -27,10 +27,10 @@ public class BruteForceMatching {
         conf.setOutputFormat(TextOutputFormat.class);
 
         conf.setNumMapTasks(4);
+        conf.setInt("hbk.userdefined.split.size", Integer.parseInt(args[3]));
 
         // Set key-value separator to ','
         conf.set("mapreduce.output.textoutputformat.separator", ",");
-        conf.set("mapred.job.map.memory.mb","256");
 
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
         FileOutputFormat.setOutputPath(conf, new Path(args[1]));

@@ -26,7 +26,7 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, BytesWr
         key.set(pos);
         len = in.read(value);
         pos++;  // Each call of this method, shift position by one
-        return len != -1; // if eof, that's !
+        return len != -1; // if eof is reached, return false
     }
 
     @Override

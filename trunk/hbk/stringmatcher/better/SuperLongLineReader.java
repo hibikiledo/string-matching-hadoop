@@ -18,6 +18,7 @@ public class SuperLongLineReader implements Closeable {
         this.blockSize = blockSize;
         this.maxPatLength = maxPatLength;
 
+        // debug
         System.out.println("LineRecordReader(StartOffset): "+startOffset);
         System.out.println("BlockSize: " + blockSize);
         System.out.println("MaxPatternLength: " + maxPatLength);
@@ -27,7 +28,7 @@ public class SuperLongLineReader implements Closeable {
         } catch (IOException e) { System.err.println(e); }
     }
 
-    // Allocate the file locally ( only the interest part, not the entire file )
+    // Allocate the into memory ( only the interest part, not the entire file )
     private void allocateIntoMem() throws IOException  {
 
         int sourceReadOffset=0;
@@ -37,12 +38,14 @@ public class SuperLongLineReader implements Closeable {
         System.out.println("source size = " + source.length);
 
         in.skip( startOffset ); // discard any data before the specify offset
+        // Do the reading into mem
         while( sourceReadOffset < source.length-1 ) {
-            len += in.read(source, sourceReadOffset, 1);
+            len = in.read(source, sourceReadOffset, 1);
+            if(len==-1) break; // if reach EOF before ideal length, stop the loop
             sourceReadOffset++;
         }
-
-        System.out.println("Data read from stream: " + len);
+        // debug : to check if it read properly
+        System.out.println("Data read from stream: " + sourceReadOffset);
 
     }
 

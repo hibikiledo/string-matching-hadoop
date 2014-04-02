@@ -30,6 +30,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
         findMaxPatternLength(job);
     }
 
+    // Find max pattern length
     private void findMaxPatternLength(JobConf jobConf) {
         int max=0;
         try {
@@ -47,6 +48,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
         }
     }
 
+
     @Override
     public RecordReader<LongWritable, BytesWritable> getRecordReader(InputSplit genericSplit, JobConf job, Reporter reporter) throws IOException {
 
@@ -55,7 +57,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
         FileSystem fileSystem;
         FSDataInputStream fileInputStream;
 
-        if ( genericSplit instanceof FileSplit) {
+        if ( genericSplit instanceof FileSplit) { // prevent from type cast exception
 
             fileSplit = (FileSplit) genericSplit;
             filePath = fileSplit.getPath();

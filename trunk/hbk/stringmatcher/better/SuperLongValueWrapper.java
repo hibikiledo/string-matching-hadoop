@@ -58,13 +58,7 @@ public class SuperLongValueWrapper {
             }
         }
 
-
-
         return value;
-    }
-
-    public int getCurrentChunkIndex() {
-        return currentChunkIndex;
     }
 
     public String getValue() {

@@ -108,7 +108,8 @@ public class SuperLongOutputFormat<K,V> extends FileOutputFormat<K,V> {
     }
 
     public RecordWriter<K, V> getRecordWriter(FileSystem ignored, JobConf job, String name, Progressable progress) throws IOException {
-        String keyValueSeparator = job.get("mapreduce.output.textoutputformat.separator", "\t");
+        // Set kay-value separator to ',' instead of '\t'
+        String keyValueSeparator = ",";
 
         Path file = FileOutputFormat.getTaskOutputPath(job, name);
         FileSystem fs = file.getFileSystem(job);

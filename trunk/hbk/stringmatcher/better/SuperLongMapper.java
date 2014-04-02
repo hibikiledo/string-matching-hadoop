@@ -32,6 +32,7 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
         }
     }
 
+    // Initialize needed data for mapping key,value pairs
     private void initialize(JobConf conf) {
 
         // Init hash map
@@ -68,12 +69,13 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
             byte[] current = subset.next();
             if(isMatch( current, valueInBytes )) {
                 keyOut.set(currentFile+","+new String( current )); // set key
-                valueOut.set( key.get() );
+                valueOut.set( key.get() ); // set value
                 output.collect(keyOut, valueOut);
              }
         }
     }
 
+    // Method to help if the two specified bytes are matched.
     private boolean isMatch(byte[] in, byte[] in2) {
         int size = Math.min(in.length, in2.length);
         for(int i=0; i<size; i++) {

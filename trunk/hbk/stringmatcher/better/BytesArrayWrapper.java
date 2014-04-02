@@ -9,9 +9,7 @@ public class BytesArrayWrapper {
     private int minSize = Integer.MAX_VALUE;
     private int maxSize;
 
-    public BytesArrayWrapper() {
-
-    }
+    public BytesArrayWrapper() { } // Default constructor
 
     public int size() { return b.size(); }
 
@@ -19,6 +17,7 @@ public class BytesArrayWrapper {
 
     public int getMaxSize() {return maxSize;}
 
+    // Wrap around ArrayList add()
     public void add(byte[] bIn) {
         if(!isContained(bIn)) {
             b.add(bIn);
@@ -29,6 +28,7 @@ public class BytesArrayWrapper {
 
     public Iterator<byte[]> getIterator() {return b.iterator();}
 
+    // Function to check weather the object already hold the specified byte array or not
     private boolean isContained(byte[] bIn) {
         if( b.size() == 0) return false;
 
@@ -42,6 +42,7 @@ public class BytesArrayWrapper {
         return true;
     }
 
+    // Utility function to compareByte
     private boolean compareBytes(byte[] a, byte[] b) {
         if(a.length != b.length) return false;
 

@@ -16,23 +16,24 @@ public class BruteForceMatching {
         JobConf conf = new JobConf(BruteForceMatching.class);
         conf.setJobName("StringMatching_HBK");
 
-        // Todo Don't forget to change this to match reduce class & function
+        // Give hint for the key-value format of mapper class
         conf.setMapOutputKeyClass(Text.class);
         conf.setMapOutputValueClass(LongWritable.class);
 
+        // Give hint for value output format of the reduce class
         conf.setOutputValueClass(Text.class);
         conf.setOutputValueClass(SuperLongValueWrapper.class);
 
+        // Set map class and reduce class
         conf.setMapperClass(SuperLongMapper.class);
         conf.setReducerClass(SuperLongReducer.class);
 
+        // Set input and output format
         conf.setInputFormat(SuperLongInputFormat.class);
         conf.setOutputFormat(SuperLongOutputFormat.class);
 
+        // Set user-defined split size in configuration file.
         conf.setInt("hbk.userdefined.split.size", Integer.parseInt(args[3]));
-
-        // Set key-value separator to ','
-        conf.set("mapreduce.output.textoutputformat.separator", ",");
 
         FileInputFormat.setInputPaths(conf, new Path(args[0]));
         FileOutputFormat.setOutputPath(conf, new Path(args[1]));

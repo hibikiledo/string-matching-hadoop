@@ -61,6 +61,8 @@ public class SuperLongOutputFormat<K,V> extends FileOutputFormat<K,V> {
                     }
                 } else { // there is/are chunk(s)
 
+                    System.out.println("Doing from " + start + ">" + end);
+
                     // write those in file as well
                     for(int i=start; i<=end; i++) {
                         FileInputStream is = new FileInputStream(String.valueOf(i));
@@ -76,7 +78,6 @@ public class SuperLongOutputFormat<K,V> extends FileOutputFormat<K,V> {
                     for(int i=0; i<valueStr.length(); i++) {
                         out.write( valueStr.charAt(i) );
                     }
-
                 }
             }
         }

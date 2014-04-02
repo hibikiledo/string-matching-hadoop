@@ -13,6 +13,7 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, BytesWr
     private long endOffset;
     private SuperLongLineReader in;
     private int len;
+    private boolean isDone = false;
 
     // Constructor
     public SuperLongRecordReader(InputStream is, long startOffSet, long blockSize, int maxPatLength) {
@@ -23,10 +24,18 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, BytesWr
 
     @Override
     public boolean next(LongWritable key, BytesWritable value) throws IOException {
+
+        if(isDone)  return false;
+
         key.set(pos);
         len = in.read(value);
         pos++;  // Each call of this method, shift position by one
-        return len != -1; // if eof is reached, return false
+
+        if(len==-1) {
+            isDone = true;
+        }
+
+        return true;
     }
 
     @Override

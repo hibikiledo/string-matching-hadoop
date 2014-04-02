@@ -61,12 +61,6 @@ public class SuperLongOutputFormat<K,V> extends FileOutputFormat<K,V> {
                     }
                 } else { // there is/are chunk(s)
 
-                    // also get some portion of left in string builder as well
-                    String valueStr = v.getValue();
-                    for(int i=0; i<valueStr.length(); i++) {
-                        out.write( valueStr.charAt(i) );
-                    }
-
                     // write those in file as well
                     for(int i=start; i<=end; i++) {
                         FileInputStream is = new FileInputStream(String.valueOf(i));
@@ -75,6 +69,12 @@ public class SuperLongOutputFormat<K,V> extends FileOutputFormat<K,V> {
                         for(int j=0; j<chunkData.length(); j++) {
                             out.write(chunkData.charAt(j));
                         }
+                    }
+
+                    // also get some portion of left in string builder as well
+                    String valueStr = v.getValue();
+                    for(int i=0; i<valueStr.length(); i++) {
+                        out.write( valueStr.charAt(i) );
                     }
 
                 }

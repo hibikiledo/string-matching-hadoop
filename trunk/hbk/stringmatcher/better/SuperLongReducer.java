@@ -18,13 +18,13 @@ public class SuperLongReducer extends MapReduceBase implements Reducer<Text, Lon
     public void reduce(Text key, Iterator<LongWritable> values, OutputCollector<Text, SuperLongValueWrapper> output, Reporter reporter)
             throws IOException {
 
+        valueOut = new SuperLongValueWrapper();
+
         while( values.hasNext() ) {
             valueOut.appendValue(values.next().get());
         }
 
         output.collect(key, valueOut);
-        // Once collected, clear the valueOut object
-        valueOut.clear();
     }
 }
 

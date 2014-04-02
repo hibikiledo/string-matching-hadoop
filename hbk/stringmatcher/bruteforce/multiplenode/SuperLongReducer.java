@@ -10,47 +10,20 @@ import org.apache.hadoop.mapred.Reporter;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class SuperLongReducer extends MapReduceBase implements Reducer<Text, LongWritable, Text, Text> {
+public class SuperLongReducer extends MapReduceBase implements Reducer<Text, LongWritable, Text, SuperLongValueWrapper> {
 
-    // Char in java is 2 byte, 16 bit
-    // Allow maximum of 2M / value pair = 1048576 in string length
-
-    private Text outValue = new Text();
-    private static final int MAX_VALUE_LIMIT = 1048576;
+    private SuperLongValueWrapper valueOut = new SuperLongValueWrapper();
 
     @Override
-    public void reduce(Text key, Iterator<LongWritable> values, OutputCollector<Text, Text> output, Reporter reporter)
+    public void reduce(Text key, Iterator<LongWritable> values, OutputCollector<Text, SuperLongValueWrapper> output, Reporter reporter)
             throws IOException {
 
-        StringBuilder sb = new StringBuilder();
-        boolean isFirstElementPassed = false;
+        valueOut = new SuperLongValueWrapper();
 
         while( values.hasNext() ) {
-
-            if(!isFirstElementPassed) {
-                sb.append(values.next().get());
-                isFirstElementPassed = true;
-            }
-            else {
-                sb.append(',').append(values.next().get());
-            }
-
-            // if sb.length more than limit , collect once
-            if(sb.length() > MAX_VALUE_LIMIT) {
-                // Debug
-                System.out.println("Reduce Output: " + key + "<>" + sb.toString());
-
-                outValue.set(sb.toString());
-                output.collect(key, outValue);
-                sb = new StringBuilder();
-            }
+            valueOut.appendValue(values.next().get());
         }
 
-        outValue.set(sb.toString());
-        // Debug
-        System.out.println("Reduce Output: " + key + "<>" + sb.toString());
-        // Key is string, value are offset and fileName
-        output.collect(key, outValue);
-
+        output.collect(key, valueOut);
     }
 }

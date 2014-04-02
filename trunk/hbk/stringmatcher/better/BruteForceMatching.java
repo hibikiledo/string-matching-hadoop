@@ -20,13 +20,15 @@ public class BruteForceMatching {
         conf.setMapOutputKeyClass(Text.class);
         conf.setMapOutputValueClass(LongWritable.class);
 
+        conf.setOutputValueClass(Text.class);
+        conf.setOutputValueClass(SuperLongValueWrapper.class);
+
         conf.setMapperClass(SuperLongMapper.class);
         conf.setReducerClass(SuperLongReducer.class);
 
         conf.setInputFormat(SuperLongInputFormat.class);
-        conf.setOutputFormat(TextOutputFormat.class);
+        conf.setOutputFormat(SuperLongOutputFormat.class);
 
-        conf.setNumMapTasks(4);
         conf.setInt("hbk.userdefined.split.size", Integer.parseInt(args[3]));
 
         // Set key-value separator to ','

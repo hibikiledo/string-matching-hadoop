@@ -49,7 +49,7 @@ public class SuperLongLineReader implements Closeable {
     public int read(BytesWritable valueIn) throws IOException{
 
         valueIn.set(source, posRelativeToSplit, maxPatLength);
-        System.out.println("Position: " + posRelativeToSplit);
+        // System.out.println("Position: " + posRelativeToSplit);
         posRelativeToSplit++;
 
         return posRelativeToSplit <= (source.length-1)-maxPatLength ? 0 : -1;

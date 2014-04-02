@@ -70,8 +70,4 @@ public class SuperLongValueWrapper {
     public String getValue() {
         return value.toString();
     }
-
-    public void clear() {
-        value = new StringBuilder();
-    }
 }

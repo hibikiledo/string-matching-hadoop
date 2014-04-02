@@ -10,28 +10,19 @@ import org.apache.hadoop.mapred.Reporter;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class SuperLongReducer extends MapReduceBase implements Reducer<Text, LongWritable, Text, Text> {
+public class SuperLongReducer extends MapReduceBase implements Reducer<Text, LongWritable, Text, SuperLongValueWritable> {
 
-    private Text outValue = new Text();
+    private SuperLongValueWritable valueOut = new SuperLongValueWritable();
 
     @Override
-    public void reduce(Text key, Iterator<LongWritable> values, OutputCollector<Text, Text> output, Reporter reporter)
+    public void reduce(Text key, Iterator<LongWritable> values, OutputCollector<Text, SuperLongValueWritable> output, Reporter reporter)
             throws IOException {
 
-        StringBuilder sb = new StringBuilder();
-        boolean isFirstElementPassed = false;
-
         while( values.hasNext() ) {
-            if(!isFirstElementPassed) {
-                sb.append(values.next().get());
-                isFirstElementPassed = true;
-            }
-            else {
-                sb.append(',').append(values.next().get());
-            }
+            valueOut.appendValue(values.next().get());
         }
-        outValue.set(sb.toString());
-        output.collect(key, outValue);
+
+        output.collect(key, valueOut);
     }
 }
 

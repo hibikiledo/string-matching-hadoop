@@ -1,27 +1,28 @@
 package hbk.stringmatcher.better;
 
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.io.BytesWritable;
 
 import java.io.*;
 
 public class SuperLongLineReader implements Closeable {
 
-    private InputStream in;
+    private FSDataInputStream in;
     private long startOffset, blockSize;
     private int maxPatLength;
     private int posRelativeToSplit = 0;
     private byte[] source;
 
-    public SuperLongLineReader(InputStream in, long startOffset, long blockSize, int maxPatLength) {
+    public SuperLongLineReader(FSDataInputStream in, long startOffset, long blockSize, int maxPatLength) {
         this.in = in;
         this.startOffset = startOffset;
         this.blockSize = blockSize;
         this.maxPatLength = maxPatLength;
 
         // debug
-        System.out.println("LineRecordReader(StartOffset): "+startOffset);
-        System.out.println("BlockSize: " + blockSize);
-        System.out.println("Max Pattern Length: " + maxPatLength);
+        //System.out.println("LineRecordReader(StartOffset): "+startOffset);
+        //System.out.println("BlockSize: " + blockSize);
+        //System.out.println("Max Pattern Length: " + maxPatLength);
 
         try {
             allocateIntoMem();
@@ -47,16 +48,13 @@ public class SuperLongLineReader implements Closeable {
             sourceReadOffset++;
         }
         // debug : to check if it read properly
-        System.out.println("source data = " + new String(source));
-        System.out.println("Data read from stream: " + sourceReadOffset);
+        //System.out.println("source data = " + new String(source));
+        //System.out.println("Data read from stream: " + sourceReadOffset);
 
     }
 
     public int read(BytesWritable valueIn) throws IOException{
-
-        System.out.println("pos relative : " + posRelativeToSplit);
         valueIn.set(source, posRelativeToSplit, maxPatLength);
-
         return posRelativeToSplit++ < source.length-maxPatLength ? 0 : -1;
     }
 

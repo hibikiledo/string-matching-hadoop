@@ -43,8 +43,9 @@ public class SuperLongValueWrapper {
 
                 // write old data in string builder to file
                 File chunkOut = new File(String.valueOf(currentChunkIndex));
-                writer = new PrintWriter(new FileOutputStream(chunkOut), true);
+                writer = new PrintWriter(new FileOutputStream(chunkOut));
                 writer.println( value.toString() );
+                writer.flush();
                 // Increment index
                 currentChunkIndex++;
                 end++;

@@ -36,9 +36,9 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
     private void initialize(JobConf conf) {
 
         // Init hash map
-        map.put((byte)97, new BytesArrayWrapper());
-        map.put((byte)98, new BytesArrayWrapper());
-        map.put((byte)99, new BytesArrayWrapper());
+        map.put((byte)97 , new BytesArrayWrapper());
+        map.put((byte)98 , new BytesArrayWrapper());
+        map.put((byte)99 , new BytesArrayWrapper());
         map.put((byte)100, new BytesArrayWrapper());
 
         // Init data in hash map
@@ -55,6 +55,7 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
             System.err.println(e);
         }
 
+        /*
         // Debug data in hash map
         Iterator<byte[]> i = map.get((byte)97).getIterator();
         while(i.hasNext()) {
@@ -72,7 +73,7 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
         while(i.hasNext()) {
             System.out.println(new String(i.next()));
         }
-
+        */
     }
 
     @Override
@@ -107,7 +108,7 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
     // Method to help if the two specified bytes are matched.
     private boolean isMatch(byte[] in, byte[] in2) {
         int size = Math.min(in.length, in2.length);
-        for(int i=0; i<size; i++) {
+        for(int i=1; i<size; i++) {
             if(in[i] != in2[i]) {
                 return false;
             }
@@ -115,4 +116,3 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
         return true;
     }
 }
-

@@ -1,5 +1,6 @@
 package hbk.stringmatcher.better;
 
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapred.RecordReader;
@@ -16,7 +17,7 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, BytesWr
     private boolean isDone = false;
 
     // Constructor
-    public SuperLongRecordReader(InputStream is, long startOffSet, long blockSize, int maxPatLength) {
+    public SuperLongRecordReader(FSDataInputStream is, long startOffSet, long blockSize, int maxPatLength) {
         in = new SuperLongLineReader(is, startOffSet, blockSize, maxPatLength);
         pos = startOffSet;
         endOffset = startOffSet + blockSize + (maxPatLength-1);

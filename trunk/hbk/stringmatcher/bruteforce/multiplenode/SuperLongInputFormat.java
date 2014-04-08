@@ -19,34 +19,10 @@ public class SuperLongInputFormat extends TextInputFormat {
     private static final double SPLIT_SLOP = 1.1;   // 10% slop
     private long minSplitSize = 1;
 
-    private ArrayList<Integer> reqStrSize = new ArrayList<Integer>();
-    private String stringListFileName;
-
     @Override
     public void configure(JobConf conf) {
         // Call super class method first
         super.configure(conf);
-        getReqStrSize(conf);
-    }
-
-    private void getReqStrSize(JobConf conf) {
-        try {
-            URI[] files = DistributedCache.getCacheFiles(conf);
-            System.out.println( files[0].getPath() ); // debug
-            File stringList = new File( files[0].getPath() );
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader( new FileInputStream( stringList )));
-            String line;
-            while((line=reader.readLine())!=null) {
-                System.out.println("LineReadIn: " + line);
-                // Don't add if that length is already exists
-                if(!reqStrSize.contains( line.length() ))
-                    reqStrSize.add(line.length());
-            }
-
-        } catch (IOException e) {
-            System.err.println(e);
-        }
     }
 
     @Override
@@ -66,13 +42,7 @@ public class SuperLongInputFormat extends TextInputFormat {
             fileSystem = filePath.getFileSystem(job);
             fileInputStream = fileSystem.open(filePath);
 
-            // Convert to int[]
-            int[] reqStrSizeInt = new int[ reqStrSize.size() ];
-            for(int i=0; i< reqStrSize.size(); i++) {
-                reqStrSizeInt[i] = reqStrSize.get(i);
-            }
-
-            return new SuperLongRecordReader(fileInputStream, reqStrSizeInt, fileSplit.getStart());
+            return new SuperLongRecordReader(fileInputStream, fileSplit.getStart(), fileSplit.getLength());
         }
 
         return null;
@@ -113,7 +83,8 @@ public class SuperLongInputFormat extends TextInputFormat {
                 }
                 if (isSplitable(fs, path)) {
                     long blockSize = file.getBlockSize();
-                    long splitSize = computeSplitSize(goalSize, minSize, blockSize);
+                    //long splitSize = computeSplitSize(goalSize, minSize, blockSize);
+                    long splitSize = job.getInt("hbk.userdefined.splitsize", 16777216);
 
                     long bytesRemaining = length;
                     while (((double) bytesRemaining)/splitSize > SPLIT_SLOP) {
@@ -151,7 +122,7 @@ public class SuperLongInputFormat extends TextInputFormat {
 
     @Override
     protected boolean isSplitable(FileSystem fs, Path file) {
-        return false;
+        return true;
     }
 }
 

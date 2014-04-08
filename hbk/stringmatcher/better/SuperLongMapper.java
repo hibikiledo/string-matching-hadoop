@@ -54,26 +54,6 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
         } catch (IOException e) {
             System.err.println(e);
         }
-
-        /*
-        // Debug data in hash map
-        Iterator<byte[]> i = map.get((byte)97).getIterator();
-        while(i.hasNext()) {
-            System.out.println(new String(i.next()));
-        }
-        i = map.get((byte)98).getIterator();
-        while(i.hasNext()) {
-            System.out.println(new String(i.next()));
-        }
-        i = map.get((byte)99).getIterator();
-        while(i.hasNext()) {
-            System.out.println(new String(i.next()));
-        }
-        i = map.get((byte)100).getIterator();
-        while(i.hasNext()) {
-            System.out.println(new String(i.next()));
-        }
-        */
     }
 
     @Override
@@ -86,8 +66,6 @@ public class SuperLongMapper extends MapReduceBase implements Mapper<LongWritabl
                 && value.getBytes()[0] != 100)
             return;
 
-        // debug
-        //System.out.println("Key into mapper : " + key.get() + "& Value into mapper : " + new String(value.getBytes()));
 
         // Get name
         currentFile = ((FileSplit)reporter.getInputSplit()).getPath().getName();

@@ -1,54 +1,60 @@
 package hbk.stringmatcher.bruteforce.multiplenode;
 
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.io.Text;
 
 import java.io.*;
 
 public class SuperLongLineReader implements Closeable {
 
-    private InputStream in;
-    private RandomAccessFile raf;
-    private int len;
-    private long fileLength;
-    private byte[] buffer = new byte[1024];
-    private static final String FILE_NAME = "split_temp";
+    private FSDataInputStream in;
+    private long blockSize, startOffset;
+    private int workingBlockSize, posRelativeToSplit=0;
+    private byte[] buffer;
 
-    public SuperLongLineReader(InputStream in) {
+    public SuperLongLineReader(FSDataInputStream in, long startOffset, long blockSize) {
         this.in = in;
+        this.blockSize = blockSize;
+        this.startOffset = startOffset;
+        workingBlockSize = (int) blockSize+99;
+
+        System.out.println("working block size: " + workingBlockSize);
+        System.out.println("processing block with start offset: " + startOffset);
+
+        buffer = new byte[workingBlockSize];
         try {
             allocateSplitLocally();
-            raf = new RandomAccessFile(new File(FILE_NAME), "r");
-            fileLength = raf.length();
         } catch (IOException e) { System.err.println(e); }
     }
 
-    // This improves seek() performance
-    // Allocate the entire file (1G) locally
     private void allocateSplitLocally() throws IOException  {
+        in.seek(startOffset);
+        int pos=0;
+        while(pos<buffer.length) {
+            in.read(buffer, pos, 1);
+            pos++;
+        }
+    }
 
-        FileOutputStream fos = new FileOutputStream(FILE_NAME);
-        int readLength;
-        while( (readLength = in.read(buffer, 0, buffer.length))!= -1 ) {
-            fos.write(buffer,0, readLength);
-            fos.flush();
+    public int read(Text value) throws IOException {
+        value.set( buffer, posRelativeToSplit, Math.min(100, (buffer.length) - posRelativeToSplit) );
+
+        //System.out.println( "read value : " + value );
+        //System.out.println("read with len : " + ((buffer.length) - posRelativeToSplit));
+        //System.out.println("pos rel : " + posRelativeToSplit);
+
+        if(posRelativeToSplit % (100000) == 0) {
+            System.out.println("done @ " + posRelativeToSplit);
         }
 
-        fos.close();
-    }
-
-    public long getProcessingFileLength() {
-        return fileLength;
-    }
-
-    public int readAtPos(Text value, long pos, int wordLength) throws IOException {
-
-        raf.seek(pos); // Seek to pos
-
-        byte[] buffer = new byte[ wordLength ];
-        len = raf.read(buffer,0, buffer.length);
-
-        value.set( buffer );
-        return len;
+        posRelativeToSplit++;
+        // If read to EOF, reset pos to 0
+        if(buffer.length-99 - posRelativeToSplit == 0) {
+            System.out.println("reach eof at offset: " + (posRelativeToSplit-1));
+            return -1;
+        } else {
+            return 0;
+        }
     }
 
     @Override

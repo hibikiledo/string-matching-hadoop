@@ -40,7 +40,7 @@ public class SuperLongLineReader implements Closeable {
         // debug
         System.out.println("source size = " + source.length);
 
-        in.skip( startOffset ); // discard any data before the specify offset
+        in.seek( startOffset ); // discard any data before the specify offset
         // Do the reading into mem
         while( sourceReadOffset < source.length ) {
             len = in.read(source, sourceReadOffset, 1);

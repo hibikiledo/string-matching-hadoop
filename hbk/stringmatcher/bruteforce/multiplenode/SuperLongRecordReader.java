@@ -1,5 +1,6 @@
 package hbk.stringmatcher.bruteforce.multiplenode;
 
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.RecordReader;
@@ -10,19 +11,18 @@ import java.io.InputStream;
 public class SuperLongRecordReader implements RecordReader<LongWritable, Text> {
 
     private long pos;
-    private int[] requestStringSize;
     private SuperLongLineReader in;
-    private long fileLength;
+    private long startOffset;
     private int len;
     private int index = 0;
+    private boolean isEnd = false;
 
     // Constructor
-    public SuperLongRecordReader(InputStream is, int[] requestStringSize, long startOffSet) {
+    public SuperLongRecordReader(FSDataInputStream is, long startOffSet, long blockSize) {
 
-        in = new SuperLongLineReader(is);
-        this.requestStringSize = requestStringSize;
+        in = new SuperLongLineReader(is, startOffSet, blockSize);
+        this.startOffset = startOffSet;
         pos = startOffSet;
-        fileLength = in.getProcessingFileLength();
 
     }
 
@@ -30,20 +30,20 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, Text> {
     @Override
     public boolean next(LongWritable key, Text value) throws IOException {
 
+        if(isEnd) return false;
+
         key.set(pos);
-        len = in.readAtPos(value, pos, requestStringSize[index]);
+        len = in.read(value);
 
         // Each call of this method, shift position by one
         pos++;
 
         // Reach EOF, reset pos and move to next index of length
         if (len == -1) {
-            pos = 0;
-            index++;
+            System.out.println("len == -1 recv >> @ pos:" + pos + " index:" + index );
+            isEnd = true;
+            return true;
         }
-
-        if(index == requestStringSize.length)
-            return false;
 
         return true;
     }
@@ -68,7 +68,7 @@ public class SuperLongRecordReader implements RecordReader<LongWritable, Text> {
 
     @Override
     public float getProgress() throws IOException {
-        return ( pos / fileLength ) * 100;
+        return 0;
     }
 }
 

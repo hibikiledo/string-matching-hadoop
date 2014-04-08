@@ -1,6 +1,5 @@
 package hbk.stringmatcher.bruteforce.multiplenode;
 
-import hbk.stringmatcher.better.SuperLongValueWrapper;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;

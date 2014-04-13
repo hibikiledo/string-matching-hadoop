@@ -43,15 +43,15 @@ public class SuperLongValueWrapper {
 
                 // write old data in string builder to file
                 File chunkOut = new File(String.valueOf(currentChunkIndex));
-                writer = new PrintWriter(new FileOutputStream(chunkOut));
+                writer = new PrintWriter(new FileOutputStream(chunkOut), true);
                 writer.println( value.toString() );
-                writer.flush();
                 // Increment index
                 currentChunkIndex++;
                 end++;
                 // Allocate new string builder and append new data
                 value = new StringBuilder();
-                value.append(valueIn);
+                value.append(',').append(valueIn);
+
             } catch (IOException e) {
                 System.err.println(e);
             } finally {

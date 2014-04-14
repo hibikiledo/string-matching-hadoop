@@ -139,6 +139,7 @@ public class SuperLongInputFormat extends FileInputFormat<LongWritable, BytesWri
             System.out.println("Start:" + split.getStart());
         }
         System.out.println("Split Count: " + splits.size());
+
         return splits.toArray(new FileSplit[splits.size()]);
     }
 }

@@ -1,4 +1,4 @@
-package hbk.stringmatcher.better;
+package hbk.stringmatcher.old;
 
 import java.io.*;
 

@@ -9,8 +9,6 @@ import org.apache.hadoop.mapred.*;
 
 public class BruteForceMatching {
 
-    private String stringListFileName;
-
     public static void main(String[] args) throws Exception {
 
         JobConf conf = new JobConf(BruteForceMatching.class);
@@ -22,11 +20,13 @@ public class BruteForceMatching {
 
         // Give hint for value output format of the reduce class
         conf.setOutputValueClass(Text.class);
-        conf.setOutputValueClass(SuperLongValueWrapper.class);
+        conf.setOutputValueClass(LongWritable.class);
 
         // Set map class and reduce class
         conf.setMapperClass(SuperLongMapper.class);
         conf.setReducerClass(SuperLongReducer.class);
+
+        conf.setNumReduceTasks(10);
 
         // Set input and output format
         conf.setInputFormat(SuperLongInputFormat.class);

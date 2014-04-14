@@ -1,4 +1,4 @@
-package hbk.stringmatcher.better;
+package hbk.stringmatcher.old;
 
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;

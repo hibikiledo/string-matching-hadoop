@@ -32,6 +32,9 @@ public class SuperLongLineReader implements Closeable {
     // Allocate the into memory ( only the interest part, not the entire file )
     private void allocateIntoMem() throws IOException  {
 
+        System.err.println("Start allocating into memory ...");
+        long start = System.currentTimeMillis();
+
         int sourceReadOffset=0;
         int len=0;
 
@@ -50,6 +53,7 @@ public class SuperLongLineReader implements Closeable {
         // debug : to check if it read properly
         //System.out.println("source data = " + new String(source));
         //System.out.println("Data read from stream: " + sourceReadOffset);
+        System.err.println("Time Taken : " + (System.currentTimeMillis()-start));
 
     }
 

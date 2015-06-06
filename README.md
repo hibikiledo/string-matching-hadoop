@@ -3,7 +3,7 @@ Extremely long string matching in Hadoop.
 
 Given an extremely long string without '\n' or any delimiter containing only 4 characters, including a,b,c, and d in multiple 1 Gigabyte files.
 
-The goal is to find the "Exact" match of the given pattern in give multiple 1 Gigabyte files using Hadoop.
+The goal is to find the "Exact" match of the given pattern in multiple 1 Gigabyte files using Hadoop.
 
 Work are separated in 3 tasks.
 
